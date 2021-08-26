@@ -70,10 +70,8 @@ std::unique_ptr<SearchStopper> AlphazeroTimeManager::GetStopper(
     initial_time_ = *time; //I want this value to not change, I dont know if this changes every move.
     const float expected_tuned_game_time_ = tuned_initial_time_ * (tuned_increment_ * expected_moves_);
     const float expected_game_time_ = *time * (*increment * expected_moves_);   
-    new_alphazerotimepct_ = std::min<float>(100 , (alphazerotimepct_ * (tuned_initial_time_ / *time ) *
-                            (expected_game_time_ / expected_tuned_game_time_)));
-    alphazero_decay_ =
-        (1 / expected_moves_) * (new_alphazerotimepct_ - alphazerotimepct_);
+    new_alphazerotimepct_ = std::min<float>(100 , (alphazerotimepct_ * (tuned_initial_time_ / *time ) * (expected_game_time_ / expected_tuned_game_time_)));
+    alphazero_decay_ = (1 / expected_moves_) * (new_alphazerotimepct_ - alphazerotimepct_);
     alphazero_modified_ = true;
   }
 
