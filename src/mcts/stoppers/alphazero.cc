@@ -63,7 +63,7 @@ std::unique_ptr<SearchStopper> AlphazeroTimeManager::GetStopper(
   const std::optional<int64_t>& time = (is_black ? params.btime : params.wtime);
   const std::optional<int64_t>& increment = (is_black ? params.binc : params.winc);
 
-  // Transforming the alphazero percentage to make it play as if it has tuner conditions.
+  // Transforming the alphazero percentage to make it play as if it has tuner conditions. (It's only done once)
   if (!alphazero_modified_) {
     const float tuned_initial_time_ = 216.0f;
     const float tuned_increment_ = 0.3f;
@@ -86,7 +86,7 @@ std::unique_ptr<SearchStopper> AlphazeroTimeManager::GetStopper(
   alphazeroincrementpct_ = (1 - std::min<float>(1, (total_moves_time - *increment)/initial_time_)) * 100.0f;
 
   float this_move_time = std::max<unsigned long>(0, total_moves_time - *increment) * (new_alphazerotimepct_ / 100.0f) + *increment * (alphazeroincrementpct_ / 100.0f);
-  // Decaying back to the input value
+  // Decaying new Alphazero percentage back to the input value
   if (moves_played_ < expected_moves_) {
     new_alphazerotimepct_ = new_alphazerotimepct_ - alphazero_decay_;
     moves_played_ = moves_played_++;
