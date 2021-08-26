@@ -89,7 +89,7 @@ std::unique_ptr<SearchStopper> AlphazeroTimeManager::GetStopper(
   // Decaying new Alphazero percentage back to the input value
   if (moves_played_ < expected_moves_) {
     new_alphazerotimepct_ = new_alphazerotimepct_ - alphazero_decay_;
-    moves_played_ = moves_played_++;
+    moves_played_++;
   }
   
 
