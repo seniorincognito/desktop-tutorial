@@ -86,7 +86,7 @@ std::unique_ptr<SearchStopper> AlphazeroTimeManager::GetStopper(
   float this_move_time = std::max<unsigned long>(0, total_moves_time - *increment) * (new_alphazerotimepct_ / 100.0f) + *increment * (alphazeroincrementpct_ / 100.0f);
   // Decaying new Alphazero percentage back to the input value
   if (moves_played_ < expected_moves_) {
-    new_alphazerotimepct_ = new_alphazerotimepct_ - alphazero_decay_;
+    new_alphazerotimepct_ -= alphazero_decay_;
     moves_played_++;
   }
   
