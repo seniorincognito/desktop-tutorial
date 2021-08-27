@@ -74,7 +74,13 @@ std::unique_ptr<SearchStopper> AlphazeroTimeManager::GetStopper(
     new_alphazerotimepct_ = std::min<float>(100, (alphazerotimepct_ * (tuned_initial_time_ / initial_time_sec_) * (expected_game_time_ / expected_tuned_game_time_)));
     alphazero_decay_ = (1 / expected_moves_) * (new_alphazerotimepct_ - alphazerotimepct_);
     alphazero_modified_ = true;
+  } else {
+    // Decaying new Alphazero percentage back to the input value
+    if (moves_played_ < expected_moves_) {
+      new_alphazerotimepct_ -= alphazero_decay_;
+    }
   }
+  moves_played_++;
 
 
   // If no time limit is given, don't stop on this condition.
@@ -85,12 +91,6 @@ std::unique_ptr<SearchStopper> AlphazeroTimeManager::GetStopper(
   alphazeroincrementpct_ = (1 - std::min<float>(1, std::max<float>(0,(total_moves_time - *increment))/initial_time_)) * 100.0f;
 
   float this_move_time = std::max<unsigned long>(0, total_moves_time - *increment) * (new_alphazerotimepct_ / 100.0f) + *increment * (alphazeroincrementpct_ / 100.0f);
-  // Decaying new Alphazero percentage back to the input value
-  if (moves_played_ < expected_moves_) {
-    new_alphazerotimepct_ -= alphazero_decay_;
-    moves_played_++;
-  }
-  
 
   LOGFILE << "Budgeted time for the move: " << this_move_time << "ms"
           << "Remaining time " << *time << "ms(-" << move_overhead_
