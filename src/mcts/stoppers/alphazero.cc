@@ -67,10 +67,11 @@ std::unique_ptr<SearchStopper> AlphazeroTimeManager::GetStopper(
   if (!alphazero_modified_) {
     const float tuned_initial_time_ = 216.0f;
     const float tuned_increment_ = 0.3f;
-    initial_time_ = *time; //I want this value to not change, I dont know if this changes every move.
+    initial_time_= *time;
+    const float initial_time_sec_ = initial_time_ / 1000.0f;
     const float expected_tuned_game_time_ = tuned_initial_time_ + (tuned_increment_ * expected_moves_);
-    const float expected_game_time_ = *time + (*increment * expected_moves_);   
-    new_alphazerotimepct_ = std::min<float>(100 , (alphazerotimepct_ * (tuned_initial_time_ / *time ) * (expected_game_time_ / expected_tuned_game_time_)));
+    const float expected_game_time_ = initial_time_sec_ + ((*increment/1000.f) * expected_moves_);   
+    new_alphazerotimepct_ = std::min<float>(100, (alphazerotimepct_ * (tuned_initial_time_ / initial_time_sec_) * (expected_game_time_ / expected_tuned_game_time_)));
     alphazero_decay_ = (1 / expected_moves_) * (new_alphazerotimepct_ - alphazerotimepct_);
     alphazero_modified_ = true;
   }
@@ -94,8 +95,6 @@ std::unique_ptr<SearchStopper> AlphazeroTimeManager::GetStopper(
   LOGFILE << "Budgeted time for the move: " << this_move_time << "ms"
           << "Remaining time " << *time << "ms(-" << move_overhead_
           << "ms overhead)";
-
-
 
   return std::make_unique<TimeLimitStopper>(this_move_time);
 }
